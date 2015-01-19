@@ -106,11 +106,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentTitle(extras.getString("title"))
 				.setTicker(extras.getString("title"))
 				.setContentIntent(contentIntent)
-
-				// Add test Action
-				.addAction(0, "Action1", contentIntent)
-
 				.setAutoCancel(true);
+
+		String actions = extras.getString("actions");
+		if(actions != null) {
+				Log.e(TAG, "Notification have actions defined.");
+				mBuilder.addAction(0, actions, contentIntent);
+		}
+		else {
+			Log.e(TAG, "Notification have no action.");
+		}
 
 		String message = extras.getString("message");
 		if (message != null) {
