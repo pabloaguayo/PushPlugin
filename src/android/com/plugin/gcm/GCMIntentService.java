@@ -108,6 +108,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentIntent(contentIntent)
 				.setAutoCancel(true);
 
+		String actions = extras.getString("actions");
+		if(actions != null) {
+			PendingIntent actioncontentIntent = getActionPendingIntent(extras, actions, 1);
+			mBuilder.addAction(0, actions, actioncontentIntent);
+
+		}
+		else {
+			Log.e(TAG, "Notification have no action.");
+		}
+		
 		String message = extras.getString("message");
 		if (message != null) {
 			mBuilder.setContentText(message);
@@ -143,6 +153,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 					.getApplicationLabel(context.getApplicationInfo());
 		
 		return (String)appName;
+	}
+
+	private PendingIntent getActionPendingIntent(Bundle extras, String actions, int activityId) {
+		Bundle actionExtras = new Bundle(extras);
+		Intent actionIntent = new Intent(this, PushHandlerActivity.class);
+		actionIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		actionExtras.putString("action", actions);
+		actionIntent.putExtra("pushBundle", actionExtras);
+
+		return PendingIntent.getActivity(this, activityId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
 	
 	@Override
