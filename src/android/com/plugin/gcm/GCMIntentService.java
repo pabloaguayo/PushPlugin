@@ -112,12 +112,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		if(actions != null) {
 			PendingIntent actioncontentIntent = getActionPendingIntent(extras, actions, 1);
 			mBuilder.addAction(0, actions, actioncontentIntent);
-
 		}
 		else {
 			Log.e(TAG, "Notification have no action.");
 		}
-		
 		String message = extras.getString("message");
 		if (message != null) {
 			mBuilder.setContentText(message);
