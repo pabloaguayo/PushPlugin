@@ -110,12 +110,17 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		String actions = extras.getString("actions");
 		if(actions != null) {
-			PendingIntent actioncontentIntent = getActionPendingIntent(extras, actions, 1);
-			mBuilder.addAction(0, actions, actioncontentIntent);
+			// Split actions and create button for eachone.
+			String[] actionsArray = actions.split(",");
+			for(int index = 0; index < actionsArray.length; index++ ) {
+				PendingIntent actioncontentIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
+				mBuilder.addAction(0, actionsArray[index], actioncontentIntent);
+			}
 		}
 		else {
 			Log.e(TAG, "Notification have no action.");
 		}
+
 		String message = extras.getString("message");
 		if (message != null) {
 			mBuilder.setContentText(message);
@@ -153,11 +158,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 		return (String)appName;
 	}
 
-	private PendingIntent getActionPendingIntent(Bundle extras, String actions, int activityId) {
+	private PendingIntent getActionPendingIntent(Bundle extras, String action, int activityId) {
 		Bundle actionExtras = new Bundle(extras);
 		Intent actionIntent = new Intent(this, PushHandlerActivity.class);
 		actionIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		actionExtras.putString("action", actions);
+		actionExtras.putString("action", action);
 		actionIntent.putExtra("pushBundle", actionExtras);
 
 		return PendingIntent.getActivity(this, activityId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
