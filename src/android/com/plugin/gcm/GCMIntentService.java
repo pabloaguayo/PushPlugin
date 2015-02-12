@@ -114,17 +114,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Log.v(TAG, "Actions" + actions);
 			String[] actionsArray = actions.split(",");
 			for(int index = 0; index < actionsArray.length; index++ ) {	
-				PendingIntent serviceIntent;
+				PendingIntent pendingIntent;
 
+				String buttonText = actionsArray[index];
 				if(actionsArray[index].contains("#")) {
-					Intent backgroundServiceIntent = new Intent(this, BackgroundService.class);
-					serviceIntent = PendingIntent.getService(
-						this, index+1, backgroundServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT
-					);
+					pendingIntent = getServicePendingIntent(extras, actionsArray[index], index+1);
+					buttonText = buttonText.split("#")[0];
 				} else {
-					serviceIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
+					pendingIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
 				}
-				mBuilder.addAction(0, actionsArray[index], serviceIntent);
+				mBuilder.addAction(0, buttonText, pendingIntent);
 			}
 		}
 		else {
@@ -170,14 +169,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	private PendingIntent getActionPendingIntent(Bundle extras, String action, int activityId) {
 		Bundle actionExtras = new Bundle(extras);
-		Intent actionIntent = new Intent(this, PushHandlerActivity.class);
-		actionIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		Intent intent = new Intent(this, PushHandlerActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		actionExtras.putString("action", action);
-		actionIntent.putExtra("pushBundle", actionExtras);
+		intent.putExtra("pushBundle", actionExtras);
 
-		return PendingIntent.getActivity(this, activityId, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		return PendingIntent.getActivity(this, activityId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 	}
-	
+
+	private PendingIntent getServicePendingIntent(Bundle extras, String action, int activityId) {
+		Bundle actionExtras = new Bundle(extras);
+		Intent intent = new Intent(this, BackgroundService.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		actionExtras.putString("action", action);
+		intent.putExtra("pushBundle", actionExtras);
+
+		return PendingIntent.getService(this, activityId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	}
+
+
 	@Override
 	public void onError(Context context, String errorId) {
 		Log.e(TAG, "onError - errorId: " + errorId);
