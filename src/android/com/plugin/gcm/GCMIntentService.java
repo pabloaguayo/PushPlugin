@@ -110,11 +110,18 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		String actions = extras.getString("actions");
 		if(actions != null) {
-			// Split actions and create button for eachone.
+			// Split actions and create button for each one.
+			Log.v(TAG, "Actions" + actions);
 			String[] actionsArray = actions.split(",");
-			for(int index = 0; index < actionsArray.length; index++ ) {
-				PendingIntent actioncontentIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
-				mBuilder.addAction(0, actionsArray[index], actioncontentIntent);
+			for(int index = 0; index < actionsArray.length; index++ ) {	
+
+				// PendingIntent actioncontentIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
+				Intent backgroundServiceIntent = new Intent(this, BackgroundService.class);
+				PendingIntent serviceIntent = PendingIntent.getService(
+					this, index+1, backgroundServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT
+				);
+
+				mBuilder.addAction(0, actionsArray[index], serviceIntent);
 			}
 		}
 		else {
