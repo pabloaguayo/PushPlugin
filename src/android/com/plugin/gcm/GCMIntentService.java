@@ -114,13 +114,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Log.v(TAG, "Actions" + actions);
 			String[] actionsArray = actions.split(",");
 			for(int index = 0; index < actionsArray.length; index++ ) {	
+				PendingIntent serviceIntent;
 
-				// PendingIntent actioncontentIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
-				Intent backgroundServiceIntent = new Intent(this, BackgroundService.class);
-				PendingIntent serviceIntent = PendingIntent.getService(
-					this, index+1, backgroundServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT
-				);
-
+				if(actionsArray[index].contains("#")) {
+					Intent backgroundServiceIntent = new Intent(this, BackgroundService.class);
+					serviceIntent = PendingIntent.getService(
+						this, index+1, backgroundServiceIntent, PendingIntent.FLAG_UPDATE_CURRENT
+					);
+				} else {
+					serviceIntent = getActionPendingIntent(extras, actionsArray[index], index+1);
+				}
 				mBuilder.addAction(0, actionsArray[index], serviceIntent);
 			}
 		}
