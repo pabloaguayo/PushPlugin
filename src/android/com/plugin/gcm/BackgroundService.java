@@ -30,14 +30,16 @@ public class BackgroundService extends IntentService {
         Bundle extras = intent.getExtras();
         Bundle originalExtras = extras.getBundle("pushBundle");
         String button = originalExtras.getString("action", "");
-        Log.v(TAG, "Recovered extra: " + button);
+        String baseUrl = originalExtras.getString("baseUrl");
+        Log.v(TAG, "Recovered button: " + button);
+        Log.v(TAG, "Recovered base url: " + baseUrl);
 
         String token = "";
         if(button.contains("#"))
             token = button.split("#")[1];
 
         try {
-            URL url = new URL("http://192.168.1.6:8080/nire/process/processCommand?token=" + token);
+            URL url = new URL(baseUrl + "/process/processCommand?token=" + token);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 int responseCode = urlConnection.getResponseCode();
