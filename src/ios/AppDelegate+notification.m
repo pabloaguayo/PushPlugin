@@ -74,6 +74,21 @@ static char launchNotificationKey;
         
         NSString* token = [actions componentsSeparatedByString: @"#"][1];
         NSLog(@"Token for action is: %@", token);
+        
+        NSString* url = [baseUrl stringByAppendingString:@"/process/processCommand?token="];
+        url = [url stringByAppendingString:token];
+        
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+        [request setHTTPMethod:@"GET"];
+        [request setURL:[NSURL URLWithString:url]];
+        
+        NSError *error = [[NSError alloc] init];
+        NSHTTPURLResponse *responseCode = nil;
+        NSData *oResponseData = [NSURLConnection sendSynchronousRequest:request
+                                                      returningResponse:&responseCode
+                                                                  error:&error];
+        
+        NSLog(@"Result of action: %@, HTTP status code %i", url, [responseCode statusCode]);
     }
     
     // Must be called when finished
