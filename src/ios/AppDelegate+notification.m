@@ -65,7 +65,12 @@ static char launchNotificationKey;
 - (void)application:(UIApplication *) application handleActionWithIdentifier: (NSString *) identifier forRemoteNotification:(NSDictionary *)notification completionHandler:(void (^)())completionHandler {
     
     if ([identifier isEqualToString: @"DONE"]) {
-        NSLog(@"My dictionary is %@", notification);
+        // Extract token and call server
+        NSString* actions = notification[@"actions"];
+        NSString* baseUrl = notification[@"baseUrl"];
+        
+        NSLog(@"Base URL is %@", baseUrl);
+        NSLog(@"Actions is %@", actions);
     }
     
     // Must be called when finished
