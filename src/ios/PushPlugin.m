@@ -52,8 +52,8 @@
 
     // Creamos las acciones
     UIMutableUserNotificationAction *acceptAction =[[UIMutableUserNotificationAction alloc] init];
-    acceptAction.identifier = @"ACCEPT_IDENTIFIER";
-    acceptAction.title = @"Accept";
+    acceptAction.identifier = @"DONE";
+    acceptAction.title = @"Hecho";
     acceptAction.activationMode = UIUserNotificationActivationModeBackground;
     // acceptAction.activationMode = UIUserNotificationActivationModeForeground;
     acceptAction.destructive = NO;
@@ -62,7 +62,7 @@
     
     // Las agrupamos en categorias
     UIMutableUserNotificationCategory *inviteCategory =[[UIMutableUserNotificationCategory alloc] init];
-    inviteCategory.identifier = @"INVITE_CATEGORY";
+    inviteCategory.identifier = @"MEDICINE_CATEGORY";
     
     [inviteCategory setActions:@[acceptAction]
                     forContext:UIUserNotificationActionContextDefault];

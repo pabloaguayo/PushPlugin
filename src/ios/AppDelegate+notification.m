@@ -64,8 +64,8 @@ static char launchNotificationKey;
 
 - (void)application:(UIApplication *) application handleActionWithIdentifier: (NSString *) identifier forRemoteNotification:(NSDictionary *)notification completionHandler:(void (^)())completionHandler {
     
-    if ([identifier isEqualToString: @"ACCEPT_IDENTIFIER"]) {
-        // [self handleAcceptActionWithNotification:notification];
+    if ([identifier isEqualToString: @"DONE"]) {
+        NSLog(@"My dictionary is %@", notification);
     }
     
     // Must be called when finished
