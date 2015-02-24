@@ -62,6 +62,17 @@ static char launchNotificationKey;
     [pushHandler didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
+- (void)application:(UIApplication *) application handleActionWithIdentifier: (NSString *) identifier forRemoteNotification:(NSDictionary *)notification completionHandler:(void (^)())completionHandler {
+    
+    if ([identifier isEqualToString: @"ACCEPT_IDENTIFIER"]) {
+        // [self handleAcceptActionWithNotification:notification];
+    }
+    
+    // Must be called when finished
+    completionHandler();
+}
+
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     NSLog(@"didReceiveNotification");
     

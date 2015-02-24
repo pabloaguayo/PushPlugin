@@ -43,6 +43,42 @@
     [self successWithMessage:@"unregistered"];
 }
 
+- (NSSet*)createButtons;
+{
+    // Creación de los botones para las medicinas
+    // TODO: Permitir configurar los botones desde Javascript
+    // TODO: Internacionalización
+    // TODO: Más de un botón
+
+    // Creamos las acciones
+    UIMutableUserNotificationAction *acceptAction =[[UIMutableUserNotificationAction alloc] init];
+    acceptAction.identifier = @"ACCEPT_IDENTIFIER";
+    acceptAction.title = @"Accept";
+    acceptAction.activationMode = UIUserNotificationActivationModeBackground;
+    // acceptAction.activationMode = UIUserNotificationActivationModeForeground;
+    acceptAction.destructive = NO;
+    acceptAction.authenticationRequired = YES;
+    
+    
+    // Las agrupamos en categorias
+    UIMutableUserNotificationCategory *inviteCategory =[[UIMutableUserNotificationCategory alloc] init];
+    inviteCategory.identifier = @"INVITE_CATEGORY";
+    
+    [inviteCategory setActions:@[acceptAction]
+                    forContext:UIUserNotificationActionContextDefault];
+    
+    [inviteCategory setActions:@[acceptAction]
+                    forContext:UIUserNotificationActionContextMinimal];
+    
+    
+    // Armamos un set con todas las categorias
+    NSSet *categories = [NSSet setWithObjects:inviteCategory, nil];
+    
+    // Al registrar las notificaciones informamos las categorias
+    NSLog(@"La aplicación puede responder a registerUserNotificationSettings");
+    return categories;
+}
+
 - (void)register:(CDVInvokedUrlCommand*)command;
 {
 	self.callbackId = command.callbackId;
@@ -119,12 +155,18 @@
     isInline = NO;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    NSLog(@"La versión de IOS es igual o mayor a IOS 8");
     if ([[UIApplication sharedApplication]respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories:nil];
+        
+        NSSet* categories = [self createButtons];
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UserNotificationTypes categories: categories];
+        
         [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
+        
     } else {
-    		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
+        NSLog(@"La aplicación NO responder a registerUserNotificationSettings");
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
     }
 #else
 		[[UIApplication sharedApplication] registerForRemoteNotificationTypes:notificationTypes];
