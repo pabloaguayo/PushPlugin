@@ -71,6 +71,9 @@ static char launchNotificationKey;
         
         NSLog(@"Base URL is %@", baseUrl);
         NSLog(@"Actions is %@", actions);
+        
+        NSString* token = [actions componentsSeparatedByString: @"#"][1];
+        NSLog(@"Token for action is: %@", token);
     }
     
     // Must be called when finished
